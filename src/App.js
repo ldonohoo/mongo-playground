@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './App.css';
 
 function App() {
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    // Fetch top-rated movies from the backend API
+    axios.get('http://localhost:5001/api/top-rated-movies')
+      .then(response => {
+        setMovies(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the movies!', error);
+      });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Top Rated Movies</h1>
+      <ul>
+        {movies.map(movie => (
+          <li key={movie._id}>
+            {movie.title} - IMDb Rating: {movie.imdb.rating}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
