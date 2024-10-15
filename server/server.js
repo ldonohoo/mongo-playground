@@ -8,7 +8,9 @@ const port = 5001;
 app.use(cors());
 
 // MongoDB Connection URI
-const uri = `mongodb+srv://lisa:a0Uk701NFus3swqP@myatlasclusteredu.nj66p.mongodb.net/?retryWrites=true&w=majority&appName=myAtlasClusterEDU`;
+const mongoUser = process.env.MONGO_USER;
+const mongoPassword = process.env.MONGO_PASSWORD;
+const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@myatlasclusteredu.nj66p.mongodb.net/?retryWrites=true&w=majority&appName=myAtlasClusterEDU`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Connect to MongoDB and run aggregation
@@ -46,7 +48,7 @@ async function getTopRatedMovies(req, res) {
 }
 
 // API endpoint for top-rated movies
-app.get('/api/movies', getTopRatedMovies);
+app.get('/api/top-rated-movies', getTopRatedMovies);
 
 // Start the server
 app.listen(port, () => {
