@@ -18,13 +18,22 @@ async function getTopRatedMovies(req, res) {
     const database = client.db('sample_mflix');
     const movies = database.collection('movies');
 
-    // Aggregation Pipeline
+    // high rated movies, decending rating order, top 10, title and rating
+    // const pipeline = [
+    //   { $match: { 'imdb.rating': { $gte: 8 } } },  
+    //   { $sort: { 'imdb.rating': -1 } },            
+    //   { $limit: 10 },                              
+    //   { $project: { title: 1, 'imdb.rating': 1 } } 
+    // ];
+
+    //
     const pipeline = [
-      { $match: { 'imdb.rating': { $gte: 8 } } },  // Filter movies with IMDb rating >= 8
-      { $sort: { 'imdb.rating': -1 } },            // Sort by IMDb rating in descending order
-      { $limit: 10 },                              // Limit to top 10 movies
-      { $project: { title: 1, 'imdb.rating': 1 } } // Project only the title and IMDb rating
-    ];
+        { $match: { 'imdb.rating': { $lt: 2 } } },  
+        { $sort: { 'imdb.rating': 1 } },           
+        { $limit: 50 },                             
+        { $project: { 'imdb.rating': 1,
+                       title: 1,} } 
+      ];
 
     const topRatedMovies = await movies.aggregate(pipeline).toArray();
     res.json(topRatedMovies);
@@ -37,7 +46,7 @@ async function getTopRatedMovies(req, res) {
 }
 
 // API endpoint for top-rated movies
-app.get('/api/top-rated-movies', getTopRatedMovies);
+app.get('/api/movies', getTopRatedMovies);
 
 // Start the server
 app.listen(port, () => {
